@@ -1,14 +1,15 @@
 import express from "express";
 import { create, read, update, del } from "./users.controller";
+import { authenticateToken } from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.post("/create", create);
 
-router.get("/read/:id_usuario", read);
+router.get("/read", authenticateToken, read);
 
-router.put("/update", update);
+router.put("/update", authenticateToken, update);
 
-router.delete("/delete/:id_usuario", del);
+router.delete("/delete", authenticateToken, del);
 
 export default router;

@@ -34,17 +34,20 @@ export async function create(req: Request, res: Response) {
 
 export async function read(req: Request, res: Response) {
   try {
-    const { id_usuario } = req.params;
+    const { id_usuario } = req.query;
     const query = await db.query(
       `SELECT * FROM usuarios WHERE id_usuario = ${id_usuario}`
     );
 
-    if (!query?.error) {
-      if(query?.results.length){
-        return res.send(query?.results[0]);
-      }else{
-        return res.status(404).send("User not found");
+    const query2 = await db.query(
+      `SELECT * FROM enderecos WHERE id_usuario = ${id_usuario}`
+    );
 
+    if (!query?.error && !query2?.error) {
+      if (query?.results.length) {
+        return res.send({ ...query?.results[0], enderecos: query2?.results });
+      } else {
+        return res.status(404).send("User not found");
       }
     } else {
       return res.status(400).send(query?.error);
@@ -56,7 +59,8 @@ export async function read(req: Request, res: Response) {
 
 export async function update(req: Request, res: Response) {
   try {
-    const { id_usuario, nome, usuario, senha } = req.body;
+    const { id_usuario } = req.query;
+    const { nome, usuario, senha } = req.body;
 
     const query = await db.preparedStatement(
       `
@@ -81,7 +85,7 @@ export async function update(req: Request, res: Response) {
 
 export async function del(req: Request, res: Response) {
   try {
-    const { id_usuario } = req.params;
+    const { id_usuario } = req.query;
 
     await db.query(`DELETE FROM enderecos WHERE id_usuario = ${id_usuario}`);
 

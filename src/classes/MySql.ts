@@ -16,7 +16,7 @@ const connection = mysql.createPool(config);
 // -----------------------------------------------------------------------------
 
 type QueryResult = {
-  results: Array<Object>;
+  results: Array<any>;
   error: MysqlError | null;
   fields: any;
 };

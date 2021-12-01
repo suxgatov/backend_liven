@@ -3,7 +3,8 @@ import db from "../../classes/MySql";
 
 export async function create(req: Request, res: Response) {
   try {
-    const { id_usuario, rua, bairro, numero, cidade, estado, pais } = req.body;
+    const { id_usuario } = req.query;
+    const { rua, bairro, numero, cidade, estado, pais } = req.body;
 
     const query = await db.preparedStatement(
       `
@@ -48,7 +49,7 @@ function queryString(query: any, field: string): string {
 
 export async function read(req: Request, res: Response) {
   try {
-    const { id_usuario } = req.params;
+    const { id_usuario } = req.query;
 
     const query = await db.query(
       `
@@ -75,6 +76,7 @@ export async function read(req: Request, res: Response) {
 
 export async function update(req: Request, res: Response) {
   try {
+    const { id_usuario } = req.query;
     const { id_endereco, rua, bairro, numero, cidade, estado, pais } = req.body;
 
     const query = await db.preparedStatement(
@@ -87,8 +89,9 @@ export async function update(req: Request, res: Response) {
         estado = ?,
         pais = ?
         WHERE id_endereco = ? 
+        AND id_usuario = ?
     `,
-      [rua, bairro, numero, cidade, estado, pais, id_endereco]
+      [rua, bairro, numero, cidade, estado, pais, id_endereco, id_usuario]
     );
 
     if (!query?.error) {
@@ -103,9 +106,12 @@ export async function update(req: Request, res: Response) {
 
 export async function del(req: Request, res: Response) {
   try {
+    const { id_usuario } = req.query;
     const { id_endereco } = req.params;
 
-    await db.query(`DELETE FROM enderecos WHERE id_endereco = ${id_endereco}`);
+    await db.query(
+      `DELETE FROM enderecos WHERE id_endereco = ${id_endereco} AND = ${id_usuario}`
+    );
 
     return res.status(200).end();
   } catch (error) {
