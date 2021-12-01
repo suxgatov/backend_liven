@@ -50,6 +50,7 @@ function queryString(query: any, field: string): string {
 export async function read(req: Request, res: Response) {
   try {
     const { id_usuario } = req.query;
+    const { id_endereco } = req.params;
 
     const query = await db.query(
       `
@@ -61,6 +62,7 @@ export async function read(req: Request, res: Response) {
         ${queryString(req.query, "cidade")}
         ${queryString(req.query, "estado")}
         ${queryString(req.query, "pais")}
+        ${id_endereco ? ` AND id_endereco = ${id_endereco} ` : ""}
       `
     );
 
