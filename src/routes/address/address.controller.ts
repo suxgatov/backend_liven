@@ -112,9 +112,8 @@ export async function del(req: Request, res: Response) {
     const { id_endereco } = req.params;
 
     await db.query(
-      `DELETE FROM enderecos WHERE id_endereco = ${id_endereco} AND = ${id_usuario}`
+      `DELETE FROM enderecos WHERE id_endereco = ${id_endereco} AND id_usuario = ${id_usuario}`
     );
-
     return res.status(200).end();
   } catch (error) {
     return res.status(500).send(error);
